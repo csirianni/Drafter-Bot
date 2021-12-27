@@ -3,28 +3,21 @@ import csv
 # import random module
 import random
 
-# ban two civs per person
-def bans(civs, names):
-    for name in names:
-        count = 0
-        while count < 2: # 2 bans per person
-            ban = input(name + " ban " + str(count + 1) + ": ")
-            if ban in civs: # check if string is valid
-                civs.remove(ban) # remove civ from list
-                count += 1
-            else:
-                print("Civizilation not found; try again")
+# generate list of civilizations excluding bans
+def bans(civs, bans):
+    for ban in bans:
+        civs.remove(ban)
     return civs
 
 # reformat list into words separated by commas
 def format_picks(picks):
-    if len(picks) == 1: # base case, return element
+    if len(picks) == 1:  # base case, return element
         return str(picks[0])
-    else: # recursive case, return with comma concatenated to recursive output
+    else:  # recursive case, return with comma concatenated to recursive output
         return str(picks[0]) + ", " + format_picks(picks[1:])
 
 # generate the picks for each person
-def draft(civs, names): 
+def draft(civs, names):
     for name in names:
         # initialize empty list for civ picks
         picks = []
@@ -41,6 +34,7 @@ def draft(civs, names):
 # print(format_picks(['Russia', 'Polyneisa', 'Mongolia']))
 # print(len(['Mongolia']))
 
+
 # open csv file
 with open('civ-list.csv') as f:
     # create a reader object
@@ -49,13 +43,18 @@ with open('civ-list.csv') as f:
     civ_list = []
     # iterate over reader and append civ name to civs list
     for civ in reader:
-        civ_list.append(civ[0]) # index 0 used to unwrap list containing the civ name
-    
+        # index 0 used to unwrap list containing the civ name
+        civ_list.append(civ[0])
+
     # print(civs)
 
 # initalize list of players
 name_list = ["Angelo", "Cedric", "Luca", "Mars", "Cleo", "Nico", "Halim"]
+random.shuffle(name_list)
+# initalize list of bans
+ban_list = ["America", "Arabia", "Assyria", "Austria", "Aztec", "Babylon",
+            "Byzantium", "Carthage", "Celts", "China", "Denmark", "Netherlands"]
 # initialize list of civs excluded those banned
-pickable_civs = bans(civ_list, name_list)
+pickable_civs = bans(civ_list, ban_list)
 # generate the picks for each person
 draft(civ_list, name_list)
