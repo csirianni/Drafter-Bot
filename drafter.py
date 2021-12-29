@@ -9,15 +9,15 @@ class Drafter:
     with open('civ-list.csv') as f:
         # create a reader object
         reader = csv.reader(f)
-        # initialize empty list for civ names
+        # initialize empty list for civ players
         full_civ_list = []
-        # iterate over reader and append civ name to civs list
+        # iterate over reader and append civ player to civs list
         for civ in reader:
-            # index 0 used to unwrap list containing the civ name
+            # index 0 used to unwrap list containing the civ player
             full_civ_list.append(civ[0])
     
-    def __init__(self, name_list: list, civ_list = None):
-        self.name_list = name_list
+    def __init__(self, player_list: list, civ_list = None):
+        self.player_list = player_list
         # use None default because pythonic, avoids unintended behavior
         if civ_list is None:
             # use copy to prevent modifying full_civ_list in ban
@@ -31,13 +31,13 @@ class Drafter:
         return self.civ_list
 
     # reformat list into words separated by commas
-    def format_picks(self, picks):
-        return ", ".join(picks)
+    def format_list(self,the_list):
+        return ", ".join(the_list)
 
     # generate the picks for each person
     def draft(self):
         msg = ""
-        for name in self.name_list:
+        for player in self.player_list:
             # initialize empty list for civ picks
             picks = []
             for i in range(3):
@@ -48,11 +48,17 @@ class Drafter:
                 # add civ to list of picks
                 picks.append(pick)
             # return picks for each person
-            msg += name + ": " + self.format_picks(picks) + "\n"
+            msg += player + ": " + self.format_list(picks) + "\n"
         return msg
 
-    def set_name_list(self, name_list):
-        self.name_list = name_list
+    def set_player_list(self, player_list):
+        self.player_list = player_list
+
+    def get_player_list(self):
+        return self.format_list(self.player_list)
     
     def set_civ_list(self, civ_list):
         self.civ_list = civ_list
+
+    def get_civ_list(self):
+        return self.format_list(self.civ_list)

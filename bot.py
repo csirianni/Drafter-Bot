@@ -31,21 +31,21 @@ async def members(ctx):
     for member in guild.members:
         await ctx.send(member.display_name)
 
-# initialize Drafter object with empty name_list
+# initialize Drafter object with empty player_list
 drafter = drafter.Drafter([])
 
 @bot.command()
 async def start(ctx):
     # store guild object of guild where command is used
     guild = ctx.guild
-    # initialize list of names
-    drafter.set_name_list([member.display_name for member in guild.members])
+    # initialize list of players
+    drafter.set_player_list([member.display_name for member in guild.members])
     # initalize list of civs
     # copy() necessary here because otherwise ban will remove item
     # from full_civ_list
     # (references in python point to the same object)
     drafter.set_civ_list(drafter.full_civ_list.copy())
-    msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.name_list)
+    msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.player_list)
     await ctx.send(msg)
 
 @bot.command()
@@ -62,11 +62,31 @@ async def draft(ctx):
     try:
         await ctx.send(msg)
     except HTTPException:
-        # this occurs when name_list is empty; ctx.send can't send an empty message
+        # this occurs when player_list is empty; ctx.send can't send an empty message
         await ctx.send("HTTPException: Make sure you ran `.start` first.")
 
 @bot.command()
 async def civlist(ctx):
-    await ctx.send(drafter.civ_list)
+    try:
+        await ctx.send(drafter.get_civ_list())
+    except HTTPException:
+        await ctx.send("HTTPException: Make sure you ran `.start` first.")
+
+@bot.command()
+async def playerlist(ctx):
+    try:
+        await ctx.send(drafter.get_player_list())
+    except HTTPException:
+        await ctx.send("HTTPException: Make sure you ran `.start` first.")
+
+@bot.command()
+async def removeplayer(ctx, player: str):
+    drafter.player_list.remove(player)
+    await ctx.send(f"{player} has been removed from the list.")
+
+@bot.command()
+async def addplayer(ctx, player: str):
+    drafter.player_list.append(player)
+    await ctx.send(f"{player} has been added to the list.")
 
 bot.run(TOKEN)
