@@ -48,8 +48,11 @@ async def start(ctx):
     # initialize list of names
     drafter.set_name_list([member.display_name for member in guild.members])
     # initalize list of civs
-    drafter.set_civ_list(drafter.full_civ_list)
-    msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter._name_list)
+    # copy() necessary here because otherwise ban will remove item
+    # from full_civ_list
+    # (references in python point to the same object)
+    drafter.set_civ_list(drafter.full_civ_list.copy())
+    msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.name_list)
     await ctx.send(msg)
 
 @bot.command()
