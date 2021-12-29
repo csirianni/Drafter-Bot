@@ -21,8 +21,10 @@ TOKEN = os.getenv('TOKEN')
 intents = discord.Intents.default()
 intents.members = True
 
+
 # initialize Bot object
-bot = commands.Bot(command_prefix='.', intents=intents)
+prefix = '.'
+bot = commands.Bot(command_prefix=prefix, intents=intents, help_command=None)
 
 @bot.event
 async def on_ready():
@@ -76,21 +78,21 @@ async def draft(ctx):
         await ctx.send(msg)
     except HTTPException:
         # this occurs when player_list is empty; ctx.send can't send an empty message
-        await ctx.send("HTTPException: Make sure you ran `.start` first.")
+        await ctx.send(f"HTTPException: Make sure you ran `{prefix}start` first.")
 
 @bot.command()
 async def civlist(ctx):
     try:
         await ctx.send(drafter.get_civ_list())
     except HTTPException:
-        await ctx.send("HTTPException: Make sure you ran `.start` first.")
+        await ctx.send(f"HTTPException: Make sure you ran `{prefix}start` first.")
 
 @bot.command()
 async def playerlist(ctx):
     try:
         await ctx.send(drafter.get_player_list())
     except HTTPException:
-        await ctx.send("HTTPException: Make sure you ran `.start` first.")
+        await ctx.send(f"HTTPException: Make sure you ran `{prefix}start` first.")
 
 @bot.command()
 async def removeplayer(ctx, player: str):
@@ -104,5 +106,10 @@ async def removeplayer(ctx, player: str):
 async def addplayer(ctx, player: str):
     drafter.player_list.append(player)
     await ctx.send(f"**{player}** has been added to the list.")
+
+@bot.command()
+async def help(ctx):
+    embed = discord.Embed(title="Drafter Help", description=f"- `{prefix}start`\n- `{prefix}ban\n`- `{prefix}draft`\n- `{prefix}civlist`\n- `{prefix}playerlist`\n- `{prefix}removeplayer`\n- `{prefix}addplayer`", color=discord.Color.blue())
+    await ctx.send(embed=embed)
 
 bot.run(TOKEN)
