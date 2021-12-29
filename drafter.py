@@ -3,6 +3,7 @@ import random
 
 class Drafter:
     
+    # constructor
     def __init__(self, player_list: list, civ_list = None):
         self.player_list = player_list
         self.civ_list = civ_list
