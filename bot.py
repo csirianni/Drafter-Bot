@@ -1,8 +1,11 @@
 import discord
+from discord.errors import DiscordException, HTTPException
 from discord.ext import commands
 
 # used to get token from .env file
 import os
+from discord.ext.commands.core import Command
+from discord.ext.commands.errors import CommandError, CommandInvokeError
 from dotenv import load_dotenv
 
 import drafter
@@ -47,14 +50,20 @@ async def start(ctx):
 
 @bot.command()
 async def ban(ctx, civ):
-    drafter.ban(civ)
-    await ctx.send(f"{civ} is now banned!")
+    try:
+        drafter.ban(civ)
+        await ctx.send(f"{civ} is now banned!")
+    except:
+        await ctx.send(f"{civ} is not a valid civilization. Try again.")
 
 @bot.command()
 async def draft(ctx):
-    # TODO: handle error if name_list is empty
     msg = drafter.draft()
-    await ctx.send(msg)
+    try:
+        await ctx.send(msg)
+    except HTTPException:
+        await ctx.send("HTTPException: Make sure you ran `.start` first.")
+    # await ctx.send(msg)
 
 @bot.command()
 async def civlist(ctx):
