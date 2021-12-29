@@ -1,29 +1,11 @@
 # import random module
 import random
 
-# import csv module
-import csv
-
 class Drafter:
-    # open csv file
-    with open('civ-list.csv') as f:
-        # create a reader object
-        reader = csv.reader(f)
-        # initialize empty list for civ players
-        full_civ_list = []
-        # iterate over reader and append civ player to civs list
-        for civ in reader:
-            # index 0 used to unwrap list containing the civ player
-            full_civ_list.append(civ[0])
     
     def __init__(self, player_list: list, civ_list = None):
         self.player_list = player_list
-        # use None default because pythonic, avoids unintended behavior
-        if civ_list is None:
-            # use copy to prevent modifying full_civ_list in ban
-            self.civ_list = Drafter.full_civ_list.copy()
-        else:
-            self.civ_list = civ_list
+        self.civ_list = civ_list
 
     # generate list of civilizations excluding bans
     def ban(self, civ: str):
