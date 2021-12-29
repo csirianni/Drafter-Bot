@@ -4,8 +4,6 @@ import random
 # import csv module
 import csv
 
-import copy
-
 class Drafter:
     # open csv file
     with open('civ-list.csv') as f:
@@ -20,7 +18,9 @@ class Drafter:
     
     def __init__(self, name_list: list, civ_list = None):
         self.name_list = name_list
+        # use None default because pythonic, avoids unintended behavior
         if civ_list is None:
+            # use copy to prevent modifying full_civ_list in ban
             self.civ_list = Drafter.full_civ_list.copy()
         else:
             self.civ_list = civ_list
@@ -50,7 +50,6 @@ class Drafter:
             # return picks for each person
             msg += name + ": " + self.format_picks(picks) + "\n"
         return msg
-            
 
     def set_name_list(self, name_list):
         self.name_list = name_list

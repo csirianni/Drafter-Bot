@@ -18,19 +18,9 @@ intents.members = True
 # initialize Bot object
 bot = commands.Bot(command_prefix='.', intents=intents)
 
-# get guild member list
-
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
-
-# @bot.event
-# async def on_message(message):
-#     if message.author == bot.user:
-#         return
-
-    # if message.content.startswith('$hello'):
-    #     await message.channel.send('Hello!')
 
 @bot.command()
 async def members(ctx):
