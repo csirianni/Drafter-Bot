@@ -47,7 +47,24 @@ async def start(ctx):
     guild = ctx.guild
     # initialize list of names
     drafter.set_name_list([member.display_name for member in guild.members])
-    msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.get_name_list())
+    # initalize list of civs
+    drafter.set_civ_list(drafter.full_civ_list)
+    msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter._name_list)
     await ctx.send(msg)
+
+@bot.command()
+async def ban(ctx, civ):
+    drafter.ban(civ)
+    await ctx.send(f"{civ} is now banned!")
+
+@bot.command()
+async def draft(ctx):
+    # TODO: handle error if name_list is empty
+    msg = drafter.draft()
+    await ctx.send(msg)
+
+@bot.command()
+async def civlist(ctx):
+    await ctx.send(drafter.civ_list)
 
 bot.run(TOKEN)
