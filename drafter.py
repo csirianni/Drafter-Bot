@@ -53,12 +53,6 @@ class Drafter:
 
     def set_name_list(self, name_list):
         self.name_list = name_list
-
-    # def get_name_list(self):
-    #     return self.name_list
     
     def set_civ_list(self, civ_list):
         self.civ_list = civ_list
-    
-    # def get_civ_list(self):
-    #     return self.civ_list

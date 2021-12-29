@@ -62,8 +62,8 @@ async def draft(ctx):
     try:
         await ctx.send(msg)
     except HTTPException:
+        # this occurs when name_list is empty; ctx.send can't send an empty message
         await ctx.send("HTTPException: Make sure you ran `.start` first.")
-    # await ctx.send(msg)
 
 @bot.command()
 async def civlist(ctx):
