@@ -59,8 +59,8 @@ async def start(ctx):
 
     # store guild object of guild where command is used
     guild = ctx.guild
-    # initialize list of players
-    player_names = [member.display_name for member in guild.members]
+    # initialize list of players (excluding bots)
+    player_names = [member.display_name for member in guild.members if not member.bot]
     drafter.set_player_list(player_names)
     # dictionary used to track number of bans made by each player
     # Note: this only work if every player has a unique name since dict key values are unique
