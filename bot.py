@@ -21,8 +21,9 @@ intents.members = True
 
 
 # initialize Bot object
-prefix = '$'
-bot = commands.Bot(command_prefix=prefix, intents=intents, help_command=None)
+prefix = '!'
+activity = discord.Activity(type=discord.ActivityType.listening, name=f"{prefix}help")
+bot = commands.Bot(command_prefix=prefix, intents=intents, help_command=None, activity=activity)
 
 @bot.event
 async def on_ready():
