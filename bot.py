@@ -93,7 +93,6 @@ async def ban(ctx, civ):
 
 @bot.command()
 async def draft(ctx):
-    # TODO: add # of civ variable
     msg = drafter.draft()
     try:
         await ctx.send(msg)
@@ -106,6 +105,7 @@ async def civlist(ctx):
     try:
         await ctx.send(drafter.get_civ_list())
     except HTTPException:
+        # this occurs when civ_list is empty; ctx.send can't send an empty message
         await ctx.send(f"HTTPException: Make sure you ran `{prefix}start` first.")
 
 @bot.command()
@@ -113,6 +113,7 @@ async def playerlist(ctx):
     try:
         await ctx.send(drafter.get_player_list())
     except HTTPException:
+        # this occurs when player_list is empty; ctx.send can't send an empty message
         await ctx.send(f"HTTPException: Make sure you ran `{prefix}start` first.")
 
 @bot.command()
@@ -124,7 +125,11 @@ async def removeplayer(ctx, player: str):
         drafter.get_player_bans().pop(player)
         await ctx.send(f"**{player}** has been removed from the list.")
     except ValueError:
+        # this occurs when the player is not in the player list
         await ctx.send(f"**{player}** is not in the player list. Try again.")
+    except KeyError:
+        await ctx.send(f"**{player}** is not in the player_bans dictionary. Cedric, debug this.")
+        raise KeyError
 
 @bot.command()
 async def addplayer(ctx, player: str):
