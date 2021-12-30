@@ -1,15 +1,13 @@
 import discord
-from discord.errors import DiscordException, HTTPException
+from discord.errors import HTTPException
 from discord.ext import commands
 
 # used to get token from .env file
 import os
+from dotenv import load_dotenv
+
 # import csv module
 import csv
-
-from discord.ext.commands.core import Command
-from discord.ext.commands.errors import CommandError, CommandInvokeError
-from dotenv import load_dotenv
 
 import drafter
 
@@ -36,8 +34,8 @@ async def members(ctx):
     for member in guild.members:
         await ctx.send(member.display_name)
 
-# initialize Drafter object with empty player_list
-drafter = drafter.Drafter([])
+# initialize Drafter object with empty player_list, civ_list, and player_bans
+drafter = drafter.Drafter([], [], {})
 
 @bot.command()
 async def start(ctx):
@@ -51,26 +49,47 @@ async def start(ctx):
         for civ in reader:
             # index 0 used to unwrap list containing the civ player
             full_civ_list.append(civ[0])
-    # store guild object of guild where command is used
-    guild = ctx.guild
-    # initialize list of players
-    drafter.set_player_list([member.display_name for member in guild.members])
+
     # initalize list of civs
     # copy() necessary here because otherwise ban will remove item
     # from full_civ_list
     # (references in python point to the same object)
     drafter.set_civ_list(full_civ_list)
+
+    # store guild object of guild where command is used
+    guild = ctx.guild
+    # initialize list of players
+    player_names = [member.display_name for member in guild.members]
+    drafter.set_player_list(player_names)
+    # dictionary used to track number of bans made by each player
+    # Note: this only work if every player has a unique name since dict key values are unique
+    player_bans = dict.fromkeys(player_names, 0)
+    drafter.set_player_bans(player_bans)
+    print(player_bans)
     msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.player_list)
     await ctx.send(msg)
 
 @bot.command()
 async def ban(ctx, civ):
-    # TODO: add ban limit
+    # catch message author not being in the player_bans dictionary
     try:
-        drafter.ban(civ)
-        await ctx.send(f"**{civ}** is now banned!")
-    except ValueError:
-        await ctx.send(f"**{civ}** is not a valid civilization. Try again.")
+        # limit number of bans per player to 2
+        if drafter.get_player_bans()[ctx.author.name] < 2:
+            # catch invalid civilization name
+            try:
+                # remove civ from list of civs
+                drafter.ban(civ)
+                # increment player's number of bans
+                drafter.get_player_bans()[ctx.author.name] += 1
+                # print updated dict to terminal
+                print(drafter.get_player_bans())
+                await ctx.send(f"**{civ}** is now banned!")
+            except ValueError:
+                await ctx.send(f"**{civ}** is not a valid civilization. Try again.")
+        else:
+            await ctx.send(f"**{ctx.author.name}**, you've already banned two civilizations!")
+    except KeyError:
+        await ctx.send(f"**{ctx.author.name}**, you're not in the list of players. Try using `.addplayer {{player_name}}` to add yourself to the list.")
 
 @bot.command()
 async def draft(ctx):
@@ -99,7 +118,10 @@ async def playerlist(ctx):
 @bot.command()
 async def removeplayer(ctx, player: str):
     try:
+        # removes player from player list
         drafter.player_list.remove(player)
+        # removes player from player_bans dictionary
+        drafter.get_player_bans().pop(player)
         await ctx.send(f"**{player}** has been removed from the list.")
     except ValueError:
         await ctx.send(f"**{player}** is not in the player list. Try again.")

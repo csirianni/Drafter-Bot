@@ -4,9 +4,10 @@ import random
 class Drafter:
     
     # constructor
-    def __init__(self, player_list: list, civ_list = None):
+    def __init__(self, player_list: list, civ_list: list, player_bans: dict):
         self.player_list = player_list
         self.civ_list = civ_list
+        self.player_bans = player_bans
 
     # generate list of civilizations excluding bans
     def ban(self, civ: str):
@@ -45,3 +46,9 @@ class Drafter:
 
     def get_civ_list(self):
         return self.format_list(self.civ_list)
+
+    def set_player_bans(self, player_bans):
+        self.player_bans = player_bans
+    
+    def get_player_bans(self):
+        return self.player_bans
