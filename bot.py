@@ -80,7 +80,7 @@ async def ban(ctx, civ):
                 # print updated dict to terminal
                 print(drafter.get_player_bans())
                 await ctx.send(f"**{civ}** is now banned!")
-            except ValueError:
+            except (ValueError, KeyError):
                 await ctx.send(f"**{civ}** is not a valid civilization. Try again.")
         else:
             await ctx.send(f"**{ctx.author.nick}**, you've already banned two civilizations!")

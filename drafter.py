@@ -11,7 +11,9 @@ class Drafter:
 
     # generate list of civilizations excluding bans
     def ban(self, civ: str):
-        self.civ_list.remove(civ)
+        lower_civ_list = map(lambda civ: civ.lower(), self.civ_list)
+        index = lower_civ_list.index(civ.lower())
+        self.civ_list.pop(index)
         return self.civ_list
 
     # reformat list into words separated by commas
