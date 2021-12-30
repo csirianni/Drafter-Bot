@@ -21,7 +21,7 @@ intents.members = True
 
 
 # initialize Bot object
-prefix = '.'
+prefix = '$'
 bot = commands.Bot(command_prefix=prefix, intents=intents, help_command=None)
 
 @bot.event
@@ -89,7 +89,7 @@ async def ban(ctx, civ):
         else:
             await ctx.send(f"**{ctx.author.name}**, you've already banned two civilizations!")
     except KeyError:
-        await ctx.send(f"**{ctx.author.name}**, you're not in the list of players. Try using `.addplayer {{player_name}}` to add yourself to the list.")
+        await ctx.send(f"**{ctx.author.name}**, you're not in the list of players. Try using `{prefix}addplayer {{player_name}}` to add yourself to the list.")
 
 @bot.command()
 async def draft(ctx):
@@ -138,7 +138,7 @@ async def addplayer(ctx, player: str):
 
 @bot.command()
 async def help(ctx):
-    embed = discord.Embed(title="Drafter Commands", description=f"- `{prefix}start`: Initialize the list of players and the list of civs.\n- `{prefix}ban {{civ_name}}`: Remove specified civ from list of draftable civs. Limited to 2 per player. \n- `{prefix}draft': Generate the civ picks for each person.\n- `{prefix}civlist`: Print the list of draftable civs.\n- `{prefix}playerlist`: Print the list of players who will be assigned civ picks.\n- `{prefix}removeplayer {{player_name}}`: Remove specified player from list of players who will be assigned civ picks. \n- `{prefix}addplayer {{player_name}}`: Add specified player to list of players who will be assigned civ picks.", color=discord.Color.blue())
+    embed = discord.Embed(title="Drafter Commands", description=f"- `{prefix}start`: Initialize the list of players and the list of civs.\n- `{prefix}ban {{civ_name}}`: Remove specified civ from list of draftable civs. Limited to 2 per player. \n- `{prefix}draft`: Generate the civ picks for each person.\n- `{prefix}civlist`: Print the list of draftable civs.\n- `{prefix}playerlist`: Print the list of players who will be assigned civ picks.\n- `{prefix}removeplayer {{player_name}}`: Remove specified player from list of players who will be assigned civ picks. \n- `{prefix}addplayer {{player_name}}`: Add specified player to list of players who will be assigned civ picks.", color=discord.Color.blue())
     await ctx.send(embed=embed)
 
 bot.run(TOKEN)
