@@ -70,22 +70,22 @@ async def ban(ctx, civ):
     # catch message author not being in the player_bans dictionary
     try:
         # limit number of bans per player to 2
-        if drafter.get_player_bans()[ctx.author.name] < 2:
+        if drafter.get_player_bans()[ctx.author.nick] < 2:
             # catch invalid civilization name
             try:
                 # remove civ from list of civs
                 drafter.ban(civ)
                 # increment player's number of bans
-                drafter.get_player_bans()[ctx.author.name] += 1
+                drafter.get_player_bans()[ctx.author.nick] += 1
                 # print updated dict to terminal
                 print(drafter.get_player_bans())
                 await ctx.send(f"**{civ}** is now banned!")
             except ValueError:
                 await ctx.send(f"**{civ}** is not a valid civilization. Try again.")
         else:
-            await ctx.send(f"**{ctx.author.name}**, you've already banned two civilizations!")
+            await ctx.send(f"**{ctx.author.nick}**, you've already banned two civilizations!")
     except KeyError:
-        await ctx.send(f"**{ctx.author.name}**, you're not in the list of players. Try using `{prefix}addplayer {{player_name}}` to add yourself to the list.")
+        await ctx.send(f"**{ctx.author.nick}**, you're not in the list of players. Try using `{prefix}addplayer {{player_name}}` to add yourself to the list.")
 
 @bot.command()
 async def draft(ctx):
