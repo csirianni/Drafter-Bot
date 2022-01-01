@@ -4,7 +4,7 @@ from discord.ext import commands
 
 # used to get token from .env file
 import os
-TOKEN = os.environ('TOKEN')
+TOKEN = os.environ['TOKEN']
 
 # import csv module
 import csv
