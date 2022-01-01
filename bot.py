@@ -58,7 +58,7 @@ async def start(ctx):
     player_names = [member.display_name for member in guild.members if not member.bot]
     drafter.set_player_list(player_names)
     # dictionary used to track number of bans made by each player
-    # Note: this only work if every player has a unique name since dict key values are unique
+    # Note: this only work if every player has a unique name since dict keys are unique
     player_bans = dict.fromkeys(player_names, 0)
     drafter.set_player_bans(player_bans)
     print(player_bans)
@@ -74,12 +74,12 @@ async def ban(ctx, civ):
             # catch invalid civilization name
             try:
                 # remove civ from list of civs
-                drafter.ban(civ)
+                removed_civ = drafter.ban(civ)
                 # increment player's number of bans
                 drafter.get_player_bans()[ctx.author.nick] += 1
                 # print updated dict to terminal
                 print(drafter.get_player_bans())
-                await ctx.send(f"**{civ}** is now banned!")
+                await ctx.send(f"**{removed_civ}** is now banned!")
             except (ValueError, KeyError):
                 await ctx.send(f"**{civ}** is not a valid civilization. Try again.")
         else:

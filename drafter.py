@@ -9,12 +9,12 @@ class Drafter:
         self.civ_list = civ_list
         self.player_bans = player_bans
 
-    # generate list of civilizations excluding bans
+    # remove civ from list of civs and return removed civ
     def ban(self, civ: str):
-        lower_civ_list = map(lambda civ: civ.lower(), self.civ_list)
+        lower_civ_list = list(map(lambda civ: civ.lower(), self.civ_list))
         index = lower_civ_list.index(civ.lower())
-        self.civ_list.pop(index)
-        return self.civ_list
+        removed_civ = self.civ_list.pop(index)
+        return removed_civ
 
     # reformat list into words separated by commas
     def format_list(self,the_list):
