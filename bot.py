@@ -42,38 +42,39 @@ async def start(ctx):
             full_civ_list.append(civ[0])
 
     # initalize list of civs
-    # copy() necessary here because otherwise ban will remove item
-    # from full_civ_list
-    # (references in python point to the same object)
     drafter.set_civ_list(full_civ_list)
-
+    
     # store guild object of guild where command is used
     guild = ctx.guild
     # initialize list of players (excluding bots)
+    # note that display_name is used throughout the program to reference/track players
     player_display_names = [member.display_name for member in guild.members if not member.bot]
-    drafter.set_player_list(player_display_names)
+    # ensure the list contains only unique display_names
+    if len(player_display_names) != len(set(player_display_names)):
+        await ctx.send(f"Error! `{prefix}start` expected  each player to have a unique name. Try again.")
+    else:
+        drafter.set_player_list(player_display_names)
 
-    # dictionary used to track number of bans made by each player
-    player_names = [member.name for member in guild.members if not member.bot]
-    player_bans = dict.fromkeys(player_names, 0)
-    drafter.set_player_bans(player_bans)
-    print(player_bans)
-    
-    msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.player_list)
-    await ctx.send(msg)
+        # dictionary used to track number of bans made by each player
+        player_bans = dict.fromkeys(player_display_names, 0)
+        drafter.set_player_bans(player_bans)
+        print(player_bans)
+        
+        msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.player_list)
+        await ctx.send(msg)
 
 @bot.command()
 async def ban(ctx, civ):
     # catch message author not being in the player_bans dictionary
     try:
         # limit number of bans per player to 2
-        if drafter.get_player_bans()[ctx.author.name] < 2:
+        if drafter.get_player_bans()[ctx.author.display_name] < 2:
             # catch invalid civilization name
             try:
                 # remove civ from list of civs
                 removed_civ = drafter.ban(civ)
                 # increment player's number of bans
-                drafter.get_player_bans()[ctx.author.name] += 1
+                drafter.get_player_bans()[ctx.author.display_name] += 1
                 # print updated dict to terminal
                 print(drafter.get_player_bans())
                 await ctx.send(f"**{removed_civ}** is now banned!")
@@ -112,7 +113,7 @@ async def playerlist(ctx):
 @bot.command()
 async def removeplayer(ctx, player: str):
     try:
-        # removes player from player list
+        # removes player from player_list
         drafter.player_list.remove(player)
         # removes player from player_bans dictionary
         drafter.get_player_bans().pop(player)
@@ -121,13 +122,18 @@ async def removeplayer(ctx, player: str):
         # this occurs when the player is not in the player list
         await ctx.send(f"**{player}** is not in the player list. Try again.")
     except KeyError:
+        # this occurs when the player is not in the player_bans dictionary
         await ctx.send(f"**{player}** is not in the player_bans dictionary. Cedric, debug this.")
         raise KeyError
 
 @bot.command()
 async def addplayer(ctx, player: str):
-    drafter.player_list.append(player)
-    await ctx.send(f"**{player}** has been added to the list.")
+    # enforce uniqueness by checking player_list
+    if not player in drafter.player_list:
+        drafter.player_list.append(player)
+        await ctx.send(f"**{player}** has been added to the list.")
+    else:
+        await ctx.send(f"**{player}** is already in the list.")
 
 @bot.command()
 async def help(ctx):
