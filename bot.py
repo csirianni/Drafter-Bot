@@ -15,7 +15,6 @@ import drafter
 intents = discord.Intents.default()
 intents.members = True
 
-
 # initialize Bot object
 prefix = '!'
 activity = discord.Activity(type=discord.ActivityType.listening, name=f"{prefix}help")
@@ -56,13 +55,15 @@ async def start(ctx):
     # store guild object of guild where command is used
     guild = ctx.guild
     # initialize list of players (excluding bots)
-    player_names = [member.display_name for member in guild.members if not member.bot]
-    drafter.set_player_list(player_names)
+    player_nicknames = [member.display_name for member in guild.members if not member.bot]
+    drafter.set_player_list(player_nicknames)
+
     # dictionary used to track number of bans made by each player
-    # Note: this only work if every player has a unique name since dict keys are unique
+    player_names = [member.name for member in guild.members if not member.bot]
     player_bans = dict.fromkeys(player_names, 0)
     drafter.set_player_bans(player_bans)
     print(player_bans)
+    
     msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.player_list)
     await ctx.send(msg)
 
@@ -71,17 +72,17 @@ async def ban(ctx, civ):
     # catch message author not being in the player_bans dictionary
     try:
         # limit number of bans per player to 2
-        if drafter.get_player_bans()[ctx.author.nick] < 2:
+        if drafter.get_player_bans()[ctx.author.name] < 2:
             # catch invalid civilization name
             try:
                 # remove civ from list of civs
                 removed_civ = drafter.ban(civ)
                 # increment player's number of bans
-                drafter.get_player_bans()[ctx.author.nick] += 1
+                drafter.get_player_bans()[ctx.author.name] += 1
                 # print updated dict to terminal
                 print(drafter.get_player_bans())
                 await ctx.send(f"**{removed_civ}** is now banned!")
-            except (ValueError, KeyError):
+            except ValueError:
                 await ctx.send(f"**{civ}** is not a valid civilization. Try again.")
         else:
             await ctx.send(f"**{ctx.author.nick}**, you've already banned two civilizations!")
