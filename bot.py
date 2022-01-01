@@ -9,6 +9,7 @@ TOKEN = os.environ['TOKEN']
 # import csv module
 import csv
 
+# import Drafter methods
 import drafter
 
 # enable accessing members
@@ -49,8 +50,8 @@ async def start(ctx):
     # store guild object of guild where command is used
     guild = ctx.guild
     # initialize list of players (excluding bots)
-    player_nicknames = [member.display_name for member in guild.members if not member.bot]
-    drafter.set_player_list(player_nicknames)
+    player_display_names = [member.display_name for member in guild.members if not member.bot]
+    drafter.set_player_list(player_display_names)
 
     # dictionary used to track number of bans made by each player
     player_names = [member.name for member in guild.members if not member.bot]
@@ -79,9 +80,9 @@ async def ban(ctx, civ):
             except ValueError:
                 await ctx.send(f"**{civ}** is not a valid civilization. Try again.")
         else:
-            await ctx.send(f"**{ctx.author.nick}**, you've already banned two civilizations!")
+            await ctx.send(f"**{ctx.author.display_name}**, you've already banned two civilizations!")
     except KeyError:
-        await ctx.send(f"**{ctx.author.nick}**, you're not in the list of players. Try using `{prefix}addplayer {{player_name}}` to add yourself to the list.")
+        await ctx.send(f"**{ctx.author.display_name}**, you're not in the list of players. Try using `{prefix}addplayer {{player_name}}` to add yourself to the list.")
 
 @bot.command()
 async def draft(ctx):
