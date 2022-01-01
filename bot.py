@@ -92,7 +92,7 @@ async def draft(ctx):
         await ctx.send(msg)
     except HTTPException:
         # this occurs when player_list is empty; ctx.send can't send an empty message
-        await ctx.send(f"HTTPException: Make sure you ran `{prefix}start` first.")
+        await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start` first.")
 
 @bot.command()
 async def civlist(ctx):
@@ -100,7 +100,7 @@ async def civlist(ctx):
         await ctx.send(drafter.get_civ_list())
     except HTTPException:
         # this occurs when civ_list is empty; ctx.send can't send an empty message
-        await ctx.send(f"HTTPException: Make sure you ran `{prefix}start` first.")
+        await ctx.send(f"HTTPException: The civ list is empty. Make sure you ran `{prefix}start` first.")
 
 @bot.command()
 async def playerlist(ctx):
@@ -108,7 +108,7 @@ async def playerlist(ctx):
         await ctx.send(drafter.get_player_list())
     except HTTPException:
         # this occurs when player_list is empty; ctx.send can't send an empty message
-        await ctx.send(f"HTTPException: Make sure you ran `{prefix}start` first.")
+        await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start` first.")
 
 @bot.command()
 async def removeplayer(ctx, player: str):
