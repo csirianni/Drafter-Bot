@@ -24,12 +24,6 @@ bot = commands.Bot(command_prefix=prefix, intents=intents, help_command=None, ac
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
-@bot.command()
-async def members(ctx):
-    guild = ctx.guild
-    for member in guild.members:
-        await ctx.send(member.display_name)
-
 # initialize Drafter object with empty player_list, civ_list, and player_bans
 drafter = drafter.Drafter([], [], {})
 
