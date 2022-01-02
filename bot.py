@@ -29,21 +29,7 @@ async def on_ready():
 drafter = drafter.Drafter([], [], {})
 
 @bot.command()
-async def start(ctx):
-    # open csv file
-    with open('civ-list.csv') as f:
-        # create a reader object
-        reader = csv.reader(f)
-        # initialize empty list for civ players
-        full_civ_list = []
-        # iterate over reader and append civ player to civs list
-        for civ in reader:
-            # index 0 used to unwrap list containing the civ player
-            full_civ_list.append(civ[0])
-
-    # initalize list of civs
-    drafter.set_civ_list(full_civ_list)
-    
+async def start(ctx):    
     # store guild object of guild where command is used
     guild = ctx.guild
     # initialize list of players (excluding bots)
@@ -54,6 +40,19 @@ async def start(ctx):
         await ctx.send(f"Error! `{prefix}start` expected  each player to have a unique name. Try again.")
     else:
         drafter.set_player_list(player_display_names)
+
+        # open csv file
+        with open('civ-list.csv') as f:
+            # create a reader object
+            reader = csv.reader(f)
+            # initialize empty list for civ players
+            full_civ_list = []
+            # iterate over reader and append civ player to civs list
+            for civ in reader:
+                # index 0 used to unwrap list containing the civ player
+                full_civ_list.append(civ[0])
+
+        drafter.set_civ_list(full_civ_list)
 
         # dictionary used to track number of bans made by each player
         player_bans = dict.fromkeys(player_display_names, 0)
