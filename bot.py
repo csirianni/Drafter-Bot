@@ -25,11 +25,11 @@ bot = commands.Bot(command_prefix=prefix, intents=intents, help_command=None, ac
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
 
-# initialize Drafter object with empty player_list, civ_list, and player_bans
-drafter = drafter.Drafter([], [], {})
+# initialize Drafter object with empty player_list, civ_list, player_bans and ban_limit = 0
+drafter = drafter.Drafter([], [], {}, 0)
 
 @bot.command()
-async def start(ctx):    
+async def start(ctx, ban_limit = None):    
     # store guild object of guild where command is used
     guild = ctx.guild
     # initialize list of players (excluding bots)
@@ -38,6 +38,9 @@ async def start(ctx):
     # ensure the list contains only unique display_names
     if len(player_display_names) != len(set(player_display_names)):
         await ctx.send(f"Error! `{prefix}start` expected  each player to have a unique name. Try again.")
+    # ensure the ban limit >= 1
+    elif ban_limit < 1:
+        await ctx.send(f"Error! Invalid ban limit. It must be greater than zero. Try again.")
     else:
         drafter.set_player_list(player_display_names)
 
@@ -58,6 +61,12 @@ async def start(ctx):
         player_bans = dict.fromkeys(player_display_names, 0)
         drafter.set_player_bans(player_bans)
         print(player_bans)
+
+        # set # of bans limit for each player
+        if ban_limit is None:
+            drafter.set_ban_limit(2)
+        else:
+            drafter.set_ban_limt(ban_limit)
         
         msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.player_list)
         await ctx.send(msg)
@@ -67,7 +76,7 @@ async def ban(ctx, civ):
     # catch message author not being in the player_bans dictionary
     try:
         # limit number of bans per player to 2
-        if drafter.get_player_bans()[ctx.author.display_name] < 2:
+        if drafter.get_player_bans()[ctx.author.display_name] < drafter.ban_limit:
             # catch invalid civilization name
             try:
                 # remove civ from list of civs
@@ -80,7 +89,10 @@ async def ban(ctx, civ):
             except ValueError:
                 await ctx.send(f"**{civ}** is not a valid civilization. Try again.")
         else:
-            await ctx.send(f"**{ctx.author.display_name}**, you've already banned two civilizations!")
+            if drafter.ban_limit < 2:
+                await ctx.send(f"**{ctx.author.display_name}**, you've already banned {drafter.ban_limit} civilization!")
+            else:
+                await ctx.send(f"**{ctx.author.display_name}**, you've already banned {drafter.ban_limit} civilizations!")
     except KeyError:
         await ctx.send(f"**{ctx.author.display_name}**, you're not in the list of players. Try using `{prefix}addplayer {{player_name}}` to add yourself to the list.")
 
@@ -136,7 +148,7 @@ async def addplayer(ctx, player: str):
 
 @bot.command()
 async def help(ctx):
-    embed = discord.Embed(title="Drafter Commands", description=f"- `{prefix}start`: Initialize the list of players and the list of civs.\n- `{prefix}ban {{civ_name}}`: Remove specified civ from list of draftable civs. Limited to 2 per player. \n- `{prefix}draft`: Generate the civ picks for each person.\n- `{prefix}civlist`: Print the list of draftable civs.\n- `{prefix}playerlist`: Print the list of players who will be assigned civ picks.\n- `{prefix}removeplayer {{player_name}}`: Remove specified player from list of players who will be assigned civ picks. \n- `{prefix}addplayer {{player_name}}`: Add specified player to list of players who will be assigned civ picks.", color=discord.Color.blue())
+    embed = discord.Embed(title="Drafter Commands", description=f"- `{prefix}start {{ban_limit}} (optional)`: Initialize the list of players and the list of civs.\n- `{prefix}ban {{civ_name}}`: Remove specified civ from list of draftable civs. Limited to 2 per player. \n- `{prefix}draft`: Generate the civ picks for each person.\n- `{prefix}civlist`: Print the list of draftable civs.\n- `{prefix}playerlist`: Print the list of players who will be assigned civ picks.\n- `{prefix}removeplayer {{player_name}}`: Remove specified player from list of players who will be assigned civ picks. \n- `{prefix}addplayer {{player_name}}`: Add specified player to list of players who will be assigned civ picks.", color=discord.Color.blue())
     await ctx.send(embed=embed)
 
 bot.run(TOKEN)

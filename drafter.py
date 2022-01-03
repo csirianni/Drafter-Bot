@@ -4,10 +4,11 @@ import random
 class Drafter:
     
     # constructor
-    def __init__(self, player_list: list, civ_list: list, player_bans: dict):
+    def __init__(self, player_list: list, civ_list: list, player_bans: dict, ban_limit: int):
         self.player_list = player_list
         self.civ_list = civ_list
         self.player_bans = player_bans
+        self.ban_limit = ban_limit
 
     # remove civ from list of civs and return the removed civ
     def ban(self, civ: str) -> str:
@@ -53,3 +54,9 @@ class Drafter:
     
     def get_player_bans(self) -> list:
         return self.player_bans
+
+    def set_ban_limit(self, ban_limit):
+        self.ban_limit = ban_limit
+
+    def get_ban_limit(self) -> int:
+        return self.ban_limit
