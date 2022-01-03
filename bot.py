@@ -38,8 +38,8 @@ async def start(ctx, ban_limit = None):
     # ensure the list contains only unique display_names
     if len(player_display_names) != len(set(player_display_names)):
         await ctx.send(f"Error! `{prefix}start` expected  each player to have a unique name. Try again.")
-    # ensure the ban limit >= 1
-    elif ban_limit < 1:
+    # ensure the ban limit > 0
+    elif ban_limit is not None and ban_limit < 1:
         await ctx.send(f"Error! Invalid ban limit. It must be greater than zero. Try again.")
     else:
         drafter.set_player_list(player_display_names)
@@ -68,7 +68,7 @@ async def start(ctx, ban_limit = None):
         else:
             drafter.set_ban_limt(ban_limit)
         
-        msg = "Starting the draft! Here's the list of players:\n" + "\n".join(drafter.player_list)
+        msg = f"Starting the draft! Ban limit = {drafter.ban_limit} Here's the list of players:\n" + drafter.get_player_list
         await ctx.send(msg)
 
 @bot.command()
