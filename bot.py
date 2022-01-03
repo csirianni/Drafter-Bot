@@ -29,7 +29,7 @@ async def on_ready():
 drafter = drafter.Drafter([], [], {}, 0)
 
 @bot.command()
-async def start(ctx, ban_limit = None):    
+async def start(ctx, ban_limit: int = None):    
     # store guild object of guild where command is used
     guild = ctx.guild
     # initialize list of players (excluding bots)
