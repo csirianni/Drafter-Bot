@@ -66,7 +66,7 @@ async def start(ctx, ban_limit: int = None):
         if ban_limit is None:
             drafter.set_ban_limit(2)
         else:
-            drafter.set_ban_limt(ban_limit)
+            drafter.set_ban_limit(ban_limit)
         
         msg = f"Starting the draft! Ban limit = {drafter.ban_limit} Here's the list of players:\n" + drafter.get_player_list
         await ctx.send(msg)
