@@ -37,7 +37,7 @@ async def start(ctx, ban_limit: int = None):
     player_display_names = [member.display_name for member in guild.members if not member.bot]
     # ensure the list contains only unique display_names
     if len(player_display_names) != len(set(player_display_names)):
-        await ctx.send(f"Error! `{prefix}start` expected  each player to have a unique name. Try again.")
+        await ctx.send(f"Error! `{prefix}start {{ban_limit}} (optional)` expected  each player to have a unique name. Try again.")
     # ensure the ban limit > 0
     elif ban_limit is not None and ban_limit < 1:
         await ctx.send(f"Error! Invalid ban limit. It must be greater than zero. Try again.")
@@ -94,7 +94,7 @@ async def ban(ctx, civ):
             else:
                 await ctx.send(f"**{ctx.author.display_name}**, you've already banned {drafter.ban_limit} civilizations!")
     except KeyError:
-        await ctx.send(f"**{ctx.author.display_name}**, you're not in the list of players. Try using `{prefix}addplayer {{player_name}}` to add yourself to the list.")
+        await ctx.send(f"**{ctx.author.display_name}**, you're not in the list of players. Make sure you ran `{prefix}start {{ban_limit}} (optional)` first. If you have, try using `{prefix}addplayer {{player_name}}` to add yourself to the list.")
 
 @bot.command()
 async def draft(ctx):
@@ -103,7 +103,7 @@ async def draft(ctx):
         await ctx.send(msg)
     except HTTPException:
         # this occurs when player_list is empty; ctx.send can't send an empty message
-        await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start` first.")
+        await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start {{ban_limit}} (optional)` first.")
 
 @bot.command()
 async def civlist(ctx):
@@ -111,7 +111,7 @@ async def civlist(ctx):
         await ctx.send(drafter.get_civ_list())
     except HTTPException:
         # this occurs when civ_list is empty; ctx.send can't send an empty message
-        await ctx.send(f"HTTPException: The civ list is empty. Make sure you ran `{prefix}start` first.")
+        await ctx.send(f"HTTPException: The civ list is empty. Make sure you ran `{prefix}start {{ban_limit}} (optional)` first.")
 
 @bot.command()
 async def playerlist(ctx):
@@ -119,7 +119,7 @@ async def playerlist(ctx):
         await ctx.send(drafter.get_player_list())
     except HTTPException:
         # this occurs when player_list is empty; ctx.send can't send an empty message
-        await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start` first.")
+        await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start {{ban_limit}} (optional)` first.")
 
 @bot.command()
 async def removeplayer(ctx, player: str):
