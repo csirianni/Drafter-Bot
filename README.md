@@ -6,7 +6,7 @@ Cedric Sirianni
 
 Drafter Bot is a Discord bot designed to help Sid Meier's Civilization 5 multiplayer lobbies select a civilization for each player. 
 
-The bot runs a draft in which each player is randomly assigned three civilizations to choose from. Prior to this, players have to the option to remove 1 or more civilizations from the pool of possible choices.
+The bot runs a draft in which each player is randomly assigned three civilizations to choose from. Prior to this, players have to the option to remove civilizations from the pool of possible choices.
 
 The bot uses the`!` prefix for commands.
 
@@ -23,5 +23,6 @@ To see the list of possible commands, type `!help`.
 # Hosting
 
 The bot is currently hosted on [Heroku](https://dashboard.heroku.com/login) using the Free Dyno plan. The following files are only necessary if using Heroku:
+
 - `Procfile`
 - `requirements.txt`
