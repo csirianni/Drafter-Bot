@@ -52,7 +52,7 @@ class Drafter:
     def set_player_bans(self, player_bans):
         self.player_bans = player_bans
     
-    def get_player_bans(self) -> list:
+    def get_player_bans(self) -> dict:
         return self.player_bans
 
     def set_ban_limit(self, ban_limit):
