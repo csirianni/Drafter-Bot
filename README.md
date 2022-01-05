@@ -2,8 +2,6 @@
 
 Cedric Sirianni
 
-![](https://heroku-status-badges.herokuapp.com/{drafter-bot})
-
 ## About
 
 Drafter Bot is a Discord bot designed to help Sid Meier's Civilization 5 multiplayer lobbies select a civilization for each player. 
