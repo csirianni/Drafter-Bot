@@ -72,7 +72,7 @@ async def start(ctx, ban_limit: int = None):
         await ctx.send(msg)
 
 @bot.command()
-async def ban(ctx, civ):
+async def ban(ctx, civ: str):
     # catch message author not being in the player_bans dictionary
     try:
         # limit number of bans per player to 2
