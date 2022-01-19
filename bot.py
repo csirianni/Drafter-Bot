@@ -121,6 +121,16 @@ async def playerlist(ctx):
         # this occurs when player_list is empty; ctx.send can't send an empty message
         await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start {{ban_limit}} (optional)` first.")
 
+
+@bot.command()
+async def bancount(ctx):
+    try:
+        await ctx.send(drafter.get_player_bans())
+    except HTTPException:
+        # this occurs when player_list is empty; ctx.send can't send an empty message
+        await ctx.send(f"HTTPException: The ban count list is empty. Make sure you ran `{prefix}start {{ban_limit}} (optional)` first.")
+
+
 @bot.command()
 async def removeplayer(ctx, player: str):
     try:
@@ -148,7 +158,7 @@ async def addplayer(ctx, player: str):
 
 @bot.command()
 async def help(ctx):
-    embed = discord.Embed(title="Drafter Commands", description=f"- `{prefix}start {{ban_limit}} (optional)`: Initialize the list of players and the list of civs.\n- `{prefix}ban {{civ_name}}`: Remove specified civ from list of draftable civs. Limited to 2 per player. \n- `{prefix}draft`: Generate the civ picks for each person.\n- `{prefix}civlist`: Print the list of draftable civs.\n- `{prefix}playerlist`: Print the list of players who will be assigned civ picks.\n- `{prefix}removeplayer {{player_name}}`: Remove specified player from list of players who will be assigned civ picks. \n- `{prefix}addplayer {{player_name}}`: Add specified player to list of players who will be assigned civ picks.", color=discord.Color.blue())
+    embed = discord.Embed(title="Drafter Commands", description=f"- `{prefix}start {{ban_limit}} (optional)`: Initialize the list of players and the list of civs.\n- `{prefix}ban {{civ_name}}`: Remove specified civ from list of draftable civs. Limited to 2 per player. \n- `{prefix}draft`: Generate the civ picks for each person.\n- `{prefix}civlist`: Print the list of draftable civs.\n- `{prefix}playerlist`: Print the list of players who will be assigned civ picks.\n- `{prefix}bancount`: Print the number of civilizations banned by each player. \n- `{prefix}removeplayer {{player_name}}`: Remove specified player from list of players who will be assigned civ picks. \n- `{prefix}addplayer {{player_name}}`: Add specified player to list of players who will be assigned civ picks.", color=discord.Color.blue())
     await ctx.send(embed=embed)
 
 bot.run(TOKEN)
