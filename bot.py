@@ -1,4 +1,5 @@
 import discord
+import copy
 from discord.errors import HTTPException
 from discord.ext import commands
 
@@ -27,6 +28,7 @@ async def on_ready():
 
 # initialize Drafter object with empty player_list, civ_list, player_bans and ban_limit = 0
 drafter = drafter.Drafter([], [], {}, 0)
+redraft = drafter.Drafter([], [], {}, 0)
 
 @bot.command()
 async def start(ctx, ban_limit: int = None):    
@@ -98,12 +100,23 @@ async def ban(ctx, civ: str):
 
 @bot.command()
 async def draft(ctx):
+    redraft = copy.deepcopy(drafter)
     msg = drafter.draft()
     try:
         await ctx.send(msg)
     except HTTPException:
         # this occurs when player_list is empty; ctx.send can't send an empty message
         await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start {{ban_limit}} (optional)` first.")
+
+@bot.command()
+async def reroll(ctx):
+    drafter = copy.deepcopy(redraft)
+    msg = drafter.draft()
+    try:
+        await ctx.send(msg)
+    except HTTPException:
+        # this occurs when player_list is empty; ctx.send can't send an empty message
+        await ctx.send(f"HTTPException: The player list is empty. Make sure you ran `{prefix}start {{ban_limit}} (optional)` first.")        
 
 @bot.command()
 async def civlist(ctx):
