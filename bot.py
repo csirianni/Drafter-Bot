@@ -16,6 +16,7 @@ TOKEN = os.environ['TOKEN']
 
 # enable accessing members
 intents = discord.Intents.default()
+intents.message_content = True
 intents.members = True
 
 # initialize Bot object

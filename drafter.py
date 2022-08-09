@@ -1,6 +1,7 @@
 # import random module
 import random
 
+
 class Drafter:
     
     # constructor
