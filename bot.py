@@ -1,18 +1,19 @@
+import os
+import csv
+from dotenv import load_dotenv
 import discord
-import copy
 from discord.errors import HTTPException
 from discord.ext import commands
-
-# import csv module
-import csv
-
-# import Drafter constructor
 from drafter import Drafter
 
-# used to get token from .env file
-import os
+load_dotenv()
 
-TOKEN = os.environ['TOKEN']
+TOKEN = os.getenv("TOKEN")
+
+if TOKEN is None:
+    raise ValueError(
+        "TOKEN is None. Make sure you have a .env file with a TOKEN variable."
+    )
 
 # enable accessing members
 intents = discord.Intents.default()
