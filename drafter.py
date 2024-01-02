@@ -1,17 +1,17 @@
 # import random module
 import random
+import copy
 
 
 class Drafter:
-    
-    # constructor
-    def __init__(self, player_list: list, civ_list: list, player_bans: dict, ban_limit: int):
+    def __init__(
+        self, player_list: list, civ_list: list, player_bans: dict, ban_limit: int
+    ):
         self.player_list = player_list
         self.civ_list = civ_list
         self.player_bans = player_bans
         self.ban_limit = ban_limit
 
-    # remove civ from list of civs and return the removed civ
     def ban(self, civ: str) -> str:
         lower_civ_list = list(map(lambda civ: civ.lower(), self.civ_list))
         index = lower_civ_list.index(civ.lower())
@@ -24,14 +24,15 @@ class Drafter:
     # generate the picks for each person
     def draft(self) -> str:
         msg = ""
+        civ_list_copy = copy.deepcopy(self.civ_list)
         for player in self.player_list:
             # initialize empty list for civ picks
             picks = []
             for i in range(3):
                 # length of civs list
-                num_of_civs = len(self.civ_list)
+                num_of_civs = len(civ_list_copy)
                 # select random civ and remove it from list
-                pick = self.civ_list.pop(random.randint(0, num_of_civs - 1))
+                pick = civ_list_copy.pop(random.randint(0, num_of_civs - 1))
                 # add civ to list of picks
                 picks.append(pick)
             # return picks for each person
@@ -43,7 +44,7 @@ class Drafter:
 
     def get_player_list(self) -> list:
         return self.format_list(self.player_list)
-    
+
     def set_civ_list(self, civ_list):
         self.civ_list = civ_list
 
@@ -52,7 +53,7 @@ class Drafter:
 
     def set_player_bans(self, player_bans):
         self.player_bans = player_bans
-    
+
     def get_player_bans(self) -> dict:
         return self.player_bans
 
