@@ -40,22 +40,15 @@ drafter = Drafter([], [], {}, 0)
 async def start(ctx, ban_limit: int = None):
     # store guild object of guild where command is used
     guild = ctx.guild
-    # initialize list of players (excluding bots)
+    # initialize list of players (excluding bots and non-active players)
     # note that display_name is used throughout the program to reference/track players
-    # player_display_names = [
-    #     member.display_name for member in guild.members if not member.bot
-    # ]
-    # player_display_names = filter(
-    #     lambda member: not member.bot,
-    #     map(lambda member: member.display_name, guild.members),
-    # )
-    player_display_names = filter(
-        lambda member: "Active" in member.roles,
-        map(
-            lambda member: member.display_name,
-            filter(lambda member: not member.bot, guild.members),
-        ),
-    )
+    player_display_names = []
+    for member in guild.members:
+        if not member.bot:
+            for role in member.roles:
+                if role.name == "Active":
+                    player_display_names.append(member.display_name)
+                    break
     # ensure the list contains only unique display_names
     if len(player_display_names) != len(set(player_display_names)):
         await ctx.send(
@@ -89,7 +82,7 @@ async def start(ctx, ban_limit: int = None):
             drafter.set_ban_limit(ban_limit)
 
         msg = (
-            f"Starting the draft! The ban limit is {drafter.ban_limit} per person. Here's the list of players: "
+            f"Starting the draft! The ban limit is {drafter.ban_limit} per person. Here's the list of active players: "
             + drafter.get_player_list()
         )
         await ctx.send(msg)
