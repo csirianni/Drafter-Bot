@@ -8,6 +8,7 @@ from drafter import Drafter
 
 load_dotenv()
 
+VOICE_GENERAL_ID = 923313511713632311
 TOKEN = os.getenv("TOKEN")
 
 if TOKEN is None:
@@ -38,54 +39,54 @@ drafter = Drafter([], [], {}, 0)
 
 @bot.command()
 async def start(ctx, ban_limit: int = None):
-    # store guild object of guild where command is used
-    guild = ctx.guild
-    # initialize list of players (excluding bots and non-active players)
+    voice_general = ctx.guild.get_channel(VOICE_GENERAL_ID)
+
+    # initialize list of players in voice channel
     # note that display_name is used throughout the program to reference/track players
-    player_display_names = []
-    for member in guild.members:
-        if not member.bot:
-            for role in member.roles:
-                if role.name == "Active":
-                    player_display_names.append(member.display_name)
-                    break
+    player_display_names = [
+        member.display_name for member in voice_general.members if not member.bot
+    ]
+
     # ensure the list contains only unique display_names
     if len(player_display_names) != len(set(player_display_names)):
         await ctx.send(
             f"Error! `{prefix}start {{ban_limit}} (optional)` expected each player to have a unique name. Try again."
         )
+        return
+
     # ensure the ban limit >= 0
-    elif ban_limit is not None and ban_limit < 0:
+    if ban_limit is not None and ban_limit < 0:
         await ctx.send("Error! Invalid ban limit. It must be non-negative. Try again.")
+        return
+
+    drafter.set_player_list(player_display_names)
+
+    with open("civ-list.csv") as f:
+        reader = csv.reader(f)
+        # initialize empty list for civ players
+        full_civ_list = []
+        # iterate over reader and append civ player to civs list
+        for civ in reader:
+            # index 0 used to unwrap list containing the civ player
+            full_civ_list.append(civ[0])
+
+    drafter.set_civ_list(full_civ_list)
+
+    # dictionary used to track number of bans made by each player
+    player_bans = dict.fromkeys(player_display_names, 0)
+    drafter.set_player_bans(player_bans)
+
+    # set # of bans limit for each player
+    if ban_limit is None:
+        drafter.set_ban_limit(2)
     else:
-        drafter.set_player_list(player_display_names)
+        drafter.set_ban_limit(ban_limit)
 
-        with open("civ-list.csv") as f:
-            reader = csv.reader(f)
-            # initialize empty list for civ players
-            full_civ_list = []
-            # iterate over reader and append civ player to civs list
-            for civ in reader:
-                # index 0 used to unwrap list containing the civ player
-                full_civ_list.append(civ[0])
-
-        drafter.set_civ_list(full_civ_list)
-
-        # dictionary used to track number of bans made by each player
-        player_bans = dict.fromkeys(player_display_names, 0)
-        drafter.set_player_bans(player_bans)
-
-        # set # of bans limit for each player
-        if ban_limit is None:
-            drafter.set_ban_limit(2)
-        else:
-            drafter.set_ban_limit(ban_limit)
-
-        msg = (
-            f"Starting the draft! The ban limit is {drafter.ban_limit} per person. Here's the list of active players: "
-            + drafter.get_player_list()
-        )
-        await ctx.send(msg)
+    msg = (
+        f"Starting the draft! The ban limit is {drafter.ban_limit} per person. Here's the list of active players: "
+        + drafter.get_player_list()
+    )
+    await ctx.send(msg)
 
 
 @bot.command()
