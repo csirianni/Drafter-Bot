@@ -42,9 +42,20 @@ async def start(ctx, ban_limit: int = None):
     guild = ctx.guild
     # initialize list of players (excluding bots)
     # note that display_name is used throughout the program to reference/track players
-    player_display_names = [
-        member.display_name for member in guild.members if not member.bot
-    ]
+    # player_display_names = [
+    #     member.display_name for member in guild.members if not member.bot
+    # ]
+    # player_display_names = filter(
+    #     lambda member: not member.bot,
+    #     map(lambda member: member.display_name, guild.members),
+    # )
+    player_display_names = filter(
+        lambda member: "Active" in member.roles,
+        map(
+            lambda member: member.display_name,
+            filter(lambda member: not member.bot, guild.members),
+        ),
+    )
     # ensure the list contains only unique display_names
     if len(player_display_names) != len(set(player_display_names)):
         await ctx.send(
@@ -70,7 +81,6 @@ async def start(ctx, ban_limit: int = None):
         # dictionary used to track number of bans made by each player
         player_bans = dict.fromkeys(player_display_names, 0)
         drafter.set_player_bans(player_bans)
-        print(player_bans)
 
         # set # of bans limit for each player
         if ban_limit is None:
